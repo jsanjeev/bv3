@@ -13,7 +13,8 @@ export class AuthService {
 
     private baseUrl: string = environment.apiHost;
 
-    constructor(private http: HttpClient, private sharedService: SharedService, private router: Router) { }
+    constructor(private http: HttpClient, private sharedService: SharedService, private router: Router) {
+    }
 
     isLoggedIn() {
         return (this.sharedService.getValue() && this.sharedService.getValue().token !== '');
@@ -21,9 +22,11 @@ export class AuthService {
 
     async login(user) {
         const res = await this.http.post(`${this.baseUrl}/pe_users/userLogin`, user).toPromise();
-        this.sharedService.setCredentials(res['data']);
-        this.router.navigate(['dashboard']);
-        return res;
+        if (res['data'] && res['userInfo']) {
+            this.sharedService.setCredentials(res['data']);
+            this.router.navigate(['dashboard']);
+            return res['data']['userInfo']['email'];
+        }
     }
 
     checkLogin(user) {
