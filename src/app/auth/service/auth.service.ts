@@ -1,9 +1,10 @@
-import {Inject, Injectable} from '@angular/core';
-import {SESSION_STORAGE, StorageService} from 'angular-webstorage-service';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
 import {environment} from '../../../environments/environment';
 
 import {SharedService} from './shared.service';
+
 
 @Injectable({
     providedIn: 'root'
@@ -12,25 +13,20 @@ export class AuthService {
 
     private baseUrl: string = environment.apiHost;
 
-    constructor(private http: HttpClient, private sharedService: SharedService) {
-        const user = sharedService.getValue();
-        this.checkLogin(user);
+    constructor(private http: HttpClient, private sharedService: SharedService, private router: Router) { }
+
+    isLoggedIn() {
+        return (this.sharedService.getValue() && this.sharedService.getValue().token !== '');
     }
 
-    isAuthenticatedUser() {
-        if (this.sharedService.getValue().username && this.sharedService.getValue().username !== '') {
-            return true;
-        }
-        return false;
-    }
-
-    login(user) {
-        return this.http.post(`${this.baseUrl}/pe_users/userLogin`, user);
+    async login(user) {
+        const res = await this.http.post(`${this.baseUrl}/pe_users/userLogin`, user).toPromise();
+        this.sharedService.setCredentials(res['data']);
+        this.router.navigate(['dashboard']);
+        return res;
     }
 
     checkLogin(user) {
-        return this.http.post(`${this.baseUrl}/pe_users/checkLogin`, user).subscribe((response) => {
-            console.log(JSON.stringify(response));
-        });
+        return this.http.post(`${this.baseUrl}/pe_users/checkLogin`, user);
     }
 }

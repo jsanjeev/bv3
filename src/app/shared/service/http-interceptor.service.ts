@@ -12,7 +12,7 @@ export class HttpInterceptorService implements HttpInterceptor {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const tokenizeReq = req.clone({ headers: req.headers.set('Authorization', 'Bearer ' + this.shareService.getValue().token ) });
+        const tokenizeReq = req.clone({ headers: req.headers.set('Authorization', 'Bearer ' + this.shareService.getValue() ) });
         return next.handle(tokenizeReq);
     }
 }

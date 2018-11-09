@@ -13,8 +13,8 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     canLoad(): boolean | Observable<boolean> | Promise<boolean> {
-        if (!this.authService.isAuthenticatedUser()) {
-            this.router.navigate(['/login']);
+        if (!this.authService.isLoggedIn()) {
+            this.router.navigate(['login']);
             return observableOf(false);
         } else {
             return observableOf(true);
@@ -24,8 +24,8 @@ export class AuthGuard implements CanActivate, CanLoad {
     canActivate(
         next: ActivatedRouteSnapshot,
         state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-        if (!this.authService.isAuthenticatedUser()) {
-            this.router.navigate(['/login']);
+        if (!this.authService.isLoggedIn()) {
+            this.router.navigate(['login']);
             return observableOf(false);
         } else {
             return observableOf(true);

@@ -8,17 +8,21 @@ import {SESSION_STORAGE, StorageService} from 'angular-webstorage-service';
 
 export class SharedService {
 
-    private STORAGE_KEY = 'bv_local';
+    private STORAGE_KEY = 'bv_local_token';
 
     constructor(@Inject(SESSION_STORAGE) private storage: StorageService) {
     }
 
-    setValue(data) {
+    setCredentials(data) {
+        this.setToken(data['token']);
+    }
+
+    setToken(data) {
         this.storage.set(this.STORAGE_KEY, data);
     }
 
     getValue() {
-        return this.storage.get(this.STORAGE_KEY) || {};
+        return this.storage.get(this.STORAGE_KEY);
     }
 
     deleteValue() {
