@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {environment} from '../../../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
-import {SharedService} from './shared.service';
+import { SharedService } from './shared.service';
 
 
 @Injectable({
@@ -20,13 +20,18 @@ export class AuthService {
         return (this.sharedService.getValue() && this.sharedService.getValue().token !== '');
     }
 
-    async login(user) {
-        const res = await this.http.post(`${this.baseUrl}/pe_users/userLogin`, user).toPromise();
-        if (res['data'] && res['userInfo']) {
-            this.sharedService.setCredentials(res['data']);
-            this.router.navigate(['dashboard']);
-            return res['data']['userInfo']['email'];
-        }
+    login(user) {
+        return new Promise((resolve, reject) => {
+            this.http.post(`${this.baseUrl}/pe_users/userLogin`, user).subscribe((res) => {
+                if (res['data'] && res['data']['token']) {
+                    this.sharedService.setCredentials(res['data']);
+                    this.router.navigate(['dashboard']);
+                    resolve(res['data']['token']);
+                } else {
+                    reject(null);
+                }
+            });
+        })
     }
 
     checkLogin(user) {

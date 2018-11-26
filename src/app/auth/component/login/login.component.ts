@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {AuthService} from '../../service/auth.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../service/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-login',
@@ -20,13 +20,14 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         if (this.authService.isLoggedIn()) {
-            this._router.navigate(['']);
+            this._router.navigate(['dashboard']);
         }
     }
 
-    async onSubmit() {
-        const response = await this.authService.login(this.user);
-        console.log('Success:::', response);
+    onSubmit() {
+        this.authService.login(this.user)
+            .then(data => { console.log('Success:::', data); }, error => { console.log('Error:::', error); });
+
     }
 
 }
